@@ -1,0 +1,1 @@
+export 'package:synapsis_challenge/presentation/home/home.screen.dart';
