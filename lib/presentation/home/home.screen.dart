@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:synapsis_challenge/core/enum/enum.dart';
-import 'package:synapsis_challenge/presentation/a/a.screen.dart';
-import 'package:synapsis_challenge/presentation/auth/controllers/auth_controller.dart';
-import 'package:synapsis_challenge/presentation/screens.dart';
 
+import '../../core/enum/enum.dart';
+import '../auth/controllers/auth_controller.dart';
+import '../screens.dart';
 import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -40,7 +38,7 @@ class HomeScreen extends GetView<HomeController> {
       body: Obx(() => [
             const AScreen(),
             const BScreen(),
-            CScreen(),
+            const CScreen(),
           ][controller.currentPageIndex.value]),
     );
   }

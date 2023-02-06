@@ -1,64 +1,58 @@
+import 'package:camera/camera.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-
 import 'package:get/get.dart';
-import 'package:oscilloscope/oscilloscope.dart';
-import 'package:synapsis_challenge/infrastructure/navigation/routes.dart';
 
+import '../../infrastructure/navigation/routes.dart';
+import '../camera/camera.screen.dart';
 import 'controllers/c.controller.dart';
 
 class CScreen extends GetView<CController> {
-  CScreen({Key? key}) : super(key: key);
-
-  final List<Color> listColor = [
-    Colors.red,
-    Colors.orange,
-    Colors.yellow,
-    Colors.lime,
-    Colors.lightGreen,
-    Colors.green,
-    Colors.lightBlue,
-    Colors.blue,
-    Colors.purple,
-  ];
+  const CScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: GridView.count(
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
           children: [
-            const SizedBox(height: 16),
-            FilledButton.icon(
+            ElevatedButton.icon(
                 onPressed: () {
                   Get.toNamed(Routes.GRAPH_ACCELEROMETER);
                 },
                 icon: const Icon(Icons.show_chart),
                 label: const Text("Graph Accelerometer")),
-            const SizedBox(height: 8),
-            FilledButton.icon(
+            ElevatedButton.icon(
                 onPressed: () {
                   Get.toNamed(Routes.GRAPH_GYROSCOPE);
                 },
                 icon: const Icon(Icons.show_chart),
                 label: const Text("Graph Gyroscope")),
-            const SizedBox(height: 8),
-            FilledButton.icon(
+            ElevatedButton.icon(
                 onPressed: () {
                   Get.toNamed(Routes.GRAPH_MAGNETOMETER);
                 },
                 icon: const Icon(Icons.show_chart),
                 label: const Text("Graph Magnetometer")),
-            const SizedBox(height: 8),
-            FilledButton.icon(
+            ElevatedButton.icon(
                 onPressed: () {
                   Get.toNamed(Routes.MAPS);
                 },
                 icon: const Icon(Icons.map),
                 label: const Text("Maps")),
+            ElevatedButton.icon(
+                onPressed: () async {
+                  var cameras = await availableCameras();
+                  Get.log("cameras $cameras");
+                  var firstCamera = cameras.first;
+                  Get.to(CameraScreen(cameraDescription: firstCamera));
+                },
+                icon: const Icon(Icons.camera_alt_rounded),
+                label: const Text("Camera")),
           ],
         ),
       ),
@@ -122,41 +116,4 @@ class CScreen extends GetView<CController> {
       ),
     );
   }
-
-  Oscilloscope scope(List<double> data, Color color) => Oscilloscope(
-        showYAxis: true,
-        yAxisColor: Colors.white,
-        margin: const EdgeInsets.all(20.0),
-        strokeWidth: 1.0,
-        backgroundColor: Colors.white,
-        traceColor: color,
-        yAxisMax: 1.0,
-        yAxisMin: -1.0,
-        dataSet: data,
-      );
 }
-
-                        // LineChartBarData(
-                        //   color: Colors.blue,
-                        //   isCurved: true,
-                        //   dotData: FlDotData(show: false),
-                        //   spots: List.generate(
-                        //     controller.accelerometerDataY.length,
-                        //     (index) => FlSpot(
-                        //       controller.indexY[index],
-                        //       controller.accelerometerDataY[index],
-                        //     ),
-                        //   ),
-                        // ),
-                        // LineChartBarData(
-                        //   color: Colors.red,
-                        //   isCurved: true,
-                        //   dotData: FlDotData(show: false),
-                        //   spots: List.generate(
-                        //     controller.accelerometerDataZ.length,
-                        //     (index) => FlSpot(
-                        //       controller.indexY[index],
-                        //       controller.accelerometerDataZ[index],
-                        //     ),
-                        //   ),
-                        // ),

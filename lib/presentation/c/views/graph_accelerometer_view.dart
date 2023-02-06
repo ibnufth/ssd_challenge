@@ -1,9 +1,8 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:synapsis_challenge/presentation/c/controllers/c.controller.dart';
-import 'package:synapsis_challenge/presentation/c/widget/sensor_graph.dart';
+
+import '../controllers/c.controller.dart';
+import '../widget/sensor_graph.dart';
 
 class GraphAccelerometerView extends GetView<CController> {
   const GraphAccelerometerView({Key? key}) : super(key: key);

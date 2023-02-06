@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
@@ -18,8 +16,7 @@ class AuthController extends GetxController {
   final LogoutUseCase _logoutUseCase;
 
   RxBool isNFCAvailable = RxBool(false);
-  final formKeyLogin = GlobalKey<FormBuilderState>();
-  final formKeyRegister = GlobalKey<FormBuilderState>();
+  
   final email = "".obs;
   final password = "".obs;
   final name = "".obs;

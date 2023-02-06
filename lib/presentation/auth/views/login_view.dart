@@ -7,14 +7,15 @@ import 'package:synapsis_challenge/infrastructure/navigation/routes.dart';
 import 'package:synapsis_challenge/presentation/auth/controllers/auth_controller.dart';
 
 class LoginView extends GetView<AuthController> {
-  const LoginView({Key? key}) : super(key: key);
+  LoginView({Key? key}) : super(key: key);
+  final formKeyLogin = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: SafeArea(
         child: FormBuilder(
-          key: controller.formKeyLogin,
+          key: formKeyLogin,
           child: Container(
             padding: const EdgeInsets.all(20),
             child: SingleChildScrollView(
@@ -22,7 +23,7 @@ class LoginView extends GetView<AuthController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Center( 
+                  Center(
                     child: Text(
                       'Login',
                       style: textTheme.titleLarge,
@@ -65,8 +66,7 @@ class LoginView extends GetView<AuthController> {
                     width: double.infinity,
                     child: FilledButton(
                       onPressed: () {
-                        if (controller.formKeyLogin.currentState
-                                ?.saveAndValidate() ??
+                        if (formKeyLogin.currentState?.saveAndValidate() ??
                             false) {
                           controller.login();
                         }

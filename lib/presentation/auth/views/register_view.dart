@@ -7,7 +7,9 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:synapsis_challenge/presentation/auth/controllers/auth_controller.dart';
 
 class RegisterView extends GetView<AuthController> {
-  const RegisterView({Key? key}) : super(key: key);
+  RegisterView({Key? key}) : super(key: key);
+
+  final formKeyRegister = GlobalKey<FormBuilderState>();
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -21,8 +23,8 @@ class RegisterView extends GetView<AuthController> {
           isLoading: controller.isLoading.value,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: controller.formKeyRegister,
+            child: FormBuilder(
+              key: formKeyRegister,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,9 +78,7 @@ class RegisterView extends GetView<AuthController> {
                     const SizedBox(height: 16.0),
                     FilledButton(
                       onPressed: () {
-                        if (controller.formKeyRegister.currentState
-                                ?.validate() ??
-                            false) {
+                        if (formKeyRegister.currentState?.validate() ?? false) {
                           controller.register();
                         }
                       },

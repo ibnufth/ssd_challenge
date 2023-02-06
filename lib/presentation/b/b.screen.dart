@@ -126,13 +126,13 @@ class BScreen extends GetView<BController> {
                       horizontalMargin: 8,
                       columns: [
                         DataColumn2(
-                            label: Text("Text"),
+                            label: const Text("Text"),
                             fixedWidth: MediaQuery.of(context).size.width * .2),
                         DataColumn2(
-                            label: Text("Date"),
+                            label: const Text("Date"),
                             fixedWidth: MediaQuery.of(context).size.width * .2),
                         DataColumn2(
-                            label: Text("Action"),
+                            label: const Text("Action"),
                             fixedWidth: MediaQuery.of(context).size.width * .4),
                       ],
                       rows: List<DataRow2>.generate(

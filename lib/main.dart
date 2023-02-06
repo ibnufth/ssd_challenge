@@ -1,15 +1,13 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:path/path.dart';
-import 'package:synapsis_challenge/core/util/locator.dart';
-import 'package:synapsis_challenge/infrastructure/theme/ssd_theme.dart';
 
+import 'core/util/locator.dart';
 import 'infrastructure/navigation/navigation.dart';
 import 'infrastructure/navigation/routes.dart';
+import 'infrastructure/theme/ssd_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

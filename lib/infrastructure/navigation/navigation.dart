@@ -1,35 +1,15 @@
-import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:synapsis_challenge/presentation/c/views/graph_gyroscope_view.dart';
-import 'package:synapsis_challenge/presentation/c/views/graph_magnetometer_view.dart';
-import 'package:synapsis_challenge/presentation/c/views/maps_view.dart';
 
-import '../../config.dart';
 import '../../presentation/auth/views/login_nfc_view.dart';
 import '../../presentation/auth/views/login_view.dart';
 import '../../presentation/auth/views/register_view.dart';
 import '../../presentation/c/views/graph_accelerometer_view.dart';
+import '../../presentation/c/views/graph_gyroscope_view.dart';
+import '../../presentation/c/views/graph_magnetometer_view.dart';
+import '../../presentation/c/views/maps_view.dart';
 import '../../presentation/screens.dart';
 import 'bindings/controllers/controllers_bindings.dart';
 import 'routes.dart';
-
-class EnvironmentsBadge extends StatelessWidget {
-  final Widget child;
-  const EnvironmentsBadge({super.key, required this.child});
-  @override
-  Widget build(BuildContext context) {
-    var env = ConfigEnvironments.getEnvironments()['env'];
-    return env != Environments.PRODUCTION
-        ? Banner(
-            location: BannerLocation.topStart,
-            message: env!,
-            color: env == Environments.QAS ? Colors.blue : Colors.purple,
-            child: child,
-          )
-        : SizedBox(child: child);
-  }
-}
 
 class Nav {
   static List<GetPage> routes = [
@@ -40,7 +20,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.LOGIN,
-      page: () => const LoginView(),
+      page: () => LoginView(),
       binding: AuthControllerBinding(),
     ),
     GetPage(
@@ -50,7 +30,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.REGISTER,
-      page: () => const RegisterView(),
+      page: () => RegisterView(),
       binding: AuthControllerBinding(),
     ),
     GetPage(
