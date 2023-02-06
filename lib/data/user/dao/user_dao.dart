@@ -4,17 +4,18 @@ import '../model/user_model.dart';
 
 @dao
 abstract class UserDao {
-  @Query('SELECT * FROM user')
+  @Query('SELECT * FROM users')
   Future<List<UserModel>?> getUsers();
 
   @insert
   Future<void> insertUser(UserModel user);
 
-  @Query('SELECT * FROM user WHERE email = :email')
+  @update
+  Future<void> updateUser(UserModel user);
+
+  @Query('SELECT * FROM users WHERE email = :email')
   Future<UserModel?> getUserByEmail(String email);
 
-  @Query(
-      'SELECT * FROM user WHERE email = :email AND password = :password')
-  Future<UserModel?> getUserByEmailAndPassword(
-      String email, String password);
+  @Query('SELECT * FROM users WHERE email = :email AND password = :password')
+  Future<UserModel?> getUserByEmailAndPassword(String email, String password);
 }

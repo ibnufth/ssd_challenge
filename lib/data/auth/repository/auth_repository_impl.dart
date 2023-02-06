@@ -12,7 +12,8 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({AuthDataSource? authDataSourceImpl})
       : _authDataSourceImpl = authDataSourceImpl ?? Get.find();
   @override
-  Future<Either<Failure, User>> login(String email, String password) async {
+  Future<Either<Failure, User>> login(
+      {required String email, required String password}) async {
     try {
       final user = await _authDataSourceImpl.loginUser(email, password);
       return right(user.toEntity());
@@ -23,13 +24,49 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, User>> register(
-      String email, String password, String name) async {
+      {required String email,
+      required String password,
+      required String name}) async {
     try {
-      UserModel newUser =
-          UserModel(name: name, email: email, password: password);
+      UserModel newUser = UserModel(
+        name: name,
+        email: email,
+        password: password,
+        authExpiredDate: DateTime.now().add(const Duration(days: 7)),
+      );
       await _authDataSourceImpl.registerUser(newUser);
       final user = await _authDataSourceImpl.loginUser(email, password);
       return right(user.toEntity());
+    } catch (e) {
+      return left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> checkAuth() async {
+    try {
+      final user = await _authDataSourceImpl.checkAuth();
+      return right(user.toEntity());
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> loginNFC(Map nfc) async {
+    try {
+      final user = await _authDataSourceImpl.loginNFC(nfc);
+      return right(user.toEntity());
+    } catch (e) {
+      return left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> logOut() async {
+    try {
+      await _authDataSourceImpl.logout();
+      return right(true);
     } catch (e) {
       return left(Failure(message: e.toString()));
     }

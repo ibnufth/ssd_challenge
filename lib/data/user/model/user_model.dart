@@ -1,6 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:floor/floor.dart';
 
 import '../../../domain/user/entity/user.dart';
@@ -19,29 +16,39 @@ class UserModel {
   @ColumnInfo(name: "password")
   String password;
 
+  @ColumnInfo(name: "authExpiredDate")
+  DateTime authExpiredDate;
+
   UserModel({
     this.id,
     required this.name,
     required this.email,
     required this.password,
+    required this.authExpiredDate,
   });
+
+  static UserModel userNfc = UserModel(
+      name: "nfc",
+      email: "nfc",
+      password: "nfc",
+      authExpiredDate: DateTime.now().subtract(const Duration(days: 7)));
 
   factory UserModel.fromEntity(User entity) {
     return UserModel(
-      id: entity.id,
-      name: entity.name,
-      email: entity.email,
-      password: entity.password,
-    );
+        id: entity.id,
+        name: entity.name,
+        email: entity.email,
+        password: entity.password,
+        authExpiredDate: entity.authExpiredDate);
   }
 
   User toEntity() {
     return User(
-      id: id!,
-      name: name,
-      email: email,
-      password: password,
-    );
+        id: id!,
+        name: name,
+        email: email,
+        password: password,
+        authExpiredDate: authExpiredDate);
   }
 
   UserModel copyWith({
@@ -49,18 +56,20 @@ class UserModel {
     String? name,
     String? email,
     String? password,
+    DateTime? authExpiredDate,
   }) {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       password: password ?? this.password,
+      authExpiredDate: authExpiredDate ?? this.authExpiredDate,
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, password: $password)';
+    return 'UserModel(id: $id, name: $name, email: $email, password: $password, authExpiredDate: $authExpiredDate)';
   }
 
   @override

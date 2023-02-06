@@ -1,7 +1,10 @@
 class ErrorConstants {
   static const String EMAIL_EXISTS = "Email already exists";
-  static const String REGISTRATION_FAILED = "Registration failed, Try again later";
+  static const String REGISTRATION_FAILED =
+      "Registration failed, Try again later";
   static const String LOGIN_FAILED = "Login failed, Try again later";
+  static const String UNAUTHENTICATED = "Unauthenticated";
+  static const String AUTHENTICATION_EXPIRED = "Authentication Expired";
   static const String WRONG_PASSWORD = "Wrong password";
   static const String USER_NOT_FOUND = "User not found";
   static const String WEAK_PASSWORD = "Password too weak";

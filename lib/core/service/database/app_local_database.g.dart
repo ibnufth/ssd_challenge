@@ -63,6 +63,8 @@ class _$AppDatabase extends AppDatabase {
 
   UserDao? _userDaoInstance;
 
+  QRDao? _qrDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -85,7 +87,9 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `authExpiredDate` INTEGER NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `QRModel` (`id` INTEGER, `qr_text` TEXT NOT NULL, `qr_date` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -96,6 +100,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   UserDao get userDao {
     return _userDaoInstance ??= _$UserDao(database, changeListener);
+  }
+
+  @override
+  QRDao get qrDao {
+    return _qrDaoInstance ??= _$QRDao(database, changeListener);
   }
 }
 
@@ -111,7 +120,21 @@ class _$UserDao extends UserDao {
                   'id': item.id,
                   'name': item.name,
                   'email': item.email,
-                  'password': item.password
+                  'password': item.password,
+                  'authExpiredDate':
+                      _dateTimeConverter.encode(item.authExpiredDate)
+                }),
+        _userModelUpdateAdapter = UpdateAdapter(
+            database,
+            'users',
+            ['id'],
+            (UserModel item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'email': item.email,
+                  'password': item.password,
+                  'authExpiredDate':
+                      _dateTimeConverter.encode(item.authExpiredDate)
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -122,24 +145,30 @@ class _$UserDao extends UserDao {
 
   final InsertionAdapter<UserModel> _userModelInsertionAdapter;
 
+  final UpdateAdapter<UserModel> _userModelUpdateAdapter;
+
   @override
   Future<List<UserModel>?> getUsers() async {
-    return _queryAdapter.queryList('SELECT * FROM user',
+    return _queryAdapter.queryList('SELECT * FROM users',
         mapper: (Map<String, Object?> row) => UserModel(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             email: row['email'] as String,
-            password: row['password'] as String));
+            password: row['password'] as String,
+            authExpiredDate:
+                _dateTimeConverter.decode(row['authExpiredDate'] as int)));
   }
 
   @override
   Future<UserModel?> getUserByEmail(String email) async {
-    return _queryAdapter.query('SELECT * FROM user WHERE email = ?1',
+    return _queryAdapter.query('SELECT * FROM users WHERE email = ?1',
         mapper: (Map<String, Object?> row) => UserModel(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             email: row['email'] as String,
-            password: row['password'] as String),
+            password: row['password'] as String,
+            authExpiredDate:
+                _dateTimeConverter.decode(row['authExpiredDate'] as int)),
         arguments: [email]);
   }
 
@@ -149,12 +178,14 @@ class _$UserDao extends UserDao {
     String password,
   ) async {
     return _queryAdapter.query(
-        'SELECT * FROM user WHERE email = ?1 AND password = ?2',
+        'SELECT * FROM users WHERE email = ?1 AND password = ?2',
         mapper: (Map<String, Object?> row) => UserModel(
-            id: row['id'] as int,
+            id: row['id'] as int?,
             name: row['name'] as String,
             email: row['email'] as String,
-            password: row['password'] as String),
+            password: row['password'] as String,
+            authExpiredDate:
+                _dateTimeConverter.decode(row['authExpiredDate'] as int)),
         arguments: [email, password]);
   }
 
@@ -162,4 +193,81 @@ class _$UserDao extends UserDao {
   Future<void> insertUser(UserModel user) async {
     await _userModelInsertionAdapter.insert(user, OnConflictStrategy.abort);
   }
+
+  @override
+  Future<void> updateUser(UserModel user) async {
+    await _userModelUpdateAdapter.update(user, OnConflictStrategy.abort);
+  }
 }
+
+class _$QRDao extends QRDao {
+  _$QRDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _qRModelInsertionAdapter = InsertionAdapter(
+            database,
+            'QRModel',
+            (QRModel item) => <String, Object?>{
+                  'id': item.id,
+                  'qr_text': item.text,
+                  'qr_date': _dateTimeConverter.encode(item.date)
+                }),
+        _qRModelUpdateAdapter = UpdateAdapter(
+            database,
+            'QRModel',
+            ['id'],
+            (QRModel item) => <String, Object?>{
+                  'id': item.id,
+                  'qr_text': item.text,
+                  'qr_date': _dateTimeConverter.encode(item.date)
+                }),
+        _qRModelDeletionAdapter = DeletionAdapter(
+            database,
+            'QRModel',
+            ['id'],
+            (QRModel item) => <String, Object?>{
+                  'id': item.id,
+                  'qr_text': item.text,
+                  'qr_date': _dateTimeConverter.encode(item.date)
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<QRModel> _qRModelInsertionAdapter;
+
+  final UpdateAdapter<QRModel> _qRModelUpdateAdapter;
+
+  final DeletionAdapter<QRModel> _qRModelDeletionAdapter;
+
+  @override
+  Future<List<QRModel>> getAllQRModels() async {
+    return _queryAdapter.queryList('SELECT * FROM QRModel',
+        mapper: (Map<String, Object?> row) => QRModel(
+            id: row['id'] as int?,
+            text: row['qr_text'] as String,
+            date: _dateTimeConverter.decode(row['qr_date'] as int)));
+  }
+
+  @override
+  Future<void> insertQRModel(QRModel qrModel) async {
+    await _qRModelInsertionAdapter.insert(qrModel, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateQRModel(QRModel qrModel) async {
+    await _qRModelUpdateAdapter.update(qrModel, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteQRModel(QRModel qrModel) async {
+    await _qRModelDeletionAdapter.delete(qrModel);
+  }
+}
+
+// ignore_for_file: unused_element
+final _dateTimeConverter = DateTimeConverter();
